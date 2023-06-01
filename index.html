@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Prédiction KNN</title>
+</head>
+<body>
+    <h1>Prédiction KNN</h1>
+    <form action="/predict" method="POST">
+        <label for="descr_cat_veh">descr_cat_veh:</label>
+        <input type="number" name="descr_cat_veh" required><br>
+        <!-- Ajoutez les autres inputs pour les autres features ici -->
+        <!-- Assurez-vous que les noms correspondent aux clés dans accident_info -->
+
+        <label for="latitude">Latitude:</label>
+        <input type="number" name="latitude" step="any" required><br>
+        <label for="longitude">Longitude:</label>
+        <input type="number" name="longitude" step="any" required><br>
+
+        <button type="submit">Prédire</button>
+    </form>
+
+    <div id="prediction"></div>
+
+    <script>
+        // Code JavaScript pour afficher la réponse JSON dans la page
+        const form = document.querySelector('form');
+        const predictionDiv = document.getElementById('prediction');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    const predictedClassJson = xhr.responseText;
+                    const predictedClass = JSON.parse(predictedClassJson);
+
+                    predictionDiv.textContent = `Classe prédite: ${predictedClass.descr_grav}`;
+                }
+            };
+
+            xhr.open(form.method, form.action);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(new URLSearchParams(formData));
+        });
+    </script>
+</body>
+</html>
